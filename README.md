@@ -12,14 +12,16 @@ GitHub：https://github.com/kokshoo/astra-birthday-atlas
 
 ## 驗證
 
-`node --test tests/core.test.cjs`
+`node --test tests/core.test.cjs tests/career.test.cjs`
 
 ## 功能
 
 - 西曆生日驗證、十二星座固定日期區間、靈數 1–9／11／22／33。
 - 總覽、性格與動機、經典角色映照、七天成長練習。
+- 生涯運數：西方數字學主題、16 題 DISC 自編行為風格練習、工作與溝通建議，以及情境／行動／回饋紀錄。
+- DISC 每類 4 題、1–5 分，顯示平均與全部最高同分；數字學不參與 DISC 計分。自編題目未經標準化驗證。
 - 本機收藏（最多 30 份、可刪除）、完整 Markdown 下載、列印全部報告為 PDF。
-- 無後端與 API 金鑰；生日與稱呼不傳至伺服器，僅使用者點選收藏才寫入 localStorage。
+- 無後端與 API 金鑰；生日、稱呼、作答與行動紀錄不傳至伺服器，僅使用者點選收藏才寫入 localStorage。
 
 ## 內容限制
 
