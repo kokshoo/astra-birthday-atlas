@@ -4,8 +4,8 @@
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101017"><meta name="description" content="從生日出發，探索星座與生命靈數交織的角色原型、內在動機和成長路徑。">
   <title>星序 ASTRA — 讀懂你的內在宇宙</title>
-  <link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="career.css">
-  <script src="data.js" defer></script><script src="core.js" defer></script><script src="career-core.js" defer></script><script src="career-ui.js" defer></script><script src="app.js" defer></script>
+  <link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css">
+  <script src="data.js" defer></script><script src="core.js" defer></script><script src="app.js" defer></script>
 </head>
 <body>
   <aside class="sidebar">
@@ -13,7 +13,6 @@
     <div class="nav-label">我的探索</div>
     <nav aria-label="主要導覽">
       <button class="nav-item active" id="nav-explore"><span>✧</span> 星圖解讀 <span class="nav-dot"></span></button>
-      <button class="nav-item" id="nav-career"><span>◈</span> 生涯與行為</button>
       <button class="nav-item" id="nav-saved"><span>▱</span> 我的收藏 <span class="saved-count" id="saved-count">0</span></button>
       <button class="nav-item" id="nav-method"><span>◎</span> 解讀方法</button>
     </nav>
@@ -29,7 +28,7 @@
       <section class="birth-panel" aria-labelledby="birth-title"><div class="birth-heading"><div class="section-icon">✳</div><div><h2 id="birth-title">從你的誕生日開始</h2><p>一個日期，開啟一場認識自己的旅程。</p></div></div><form id="birth-form" novalidate><label class="name-field">你的稱呼 <span>選填</span><input id="nickname" maxlength="24" placeholder="我們該如何稱呼你？" autocomplete="off"></label><label class="date-field">出生日期 <span>西曆</span><input id="birthday" type="date" required min="1900-01-01" aria-describedby="form-error"></label><button class="primary-button" type="submit"><span>✧</span> 解讀我的星圖 <span>↗</span></button><p id="form-error" class="form-error" role="alert"></p></form><div class="privacy-line"><span>♧</span> 生日僅在此裝置計算，點選收藏後才會儲存在此瀏覽器。<button id="method-inline">了解計算方式 ↗</button></div></section>
       <section class="report" id="report" aria-labelledby="report-title">
         <div class="report-heading"><div><div class="eyebrow">YOUR PERSONAL BLUEPRINT</div><h2 id="report-title">你的星序檔案 <span id="example-label">範例預覽</span></h2><p id="report-subtitle"></p></div><div class="report-actions"><button id="save-button" class="secondary-button">♡ <span>收藏報告</span></button><button id="download-button" class="icon-button" aria-label="下載文字報告" title="下載文字報告">↓</button><button id="print-button" class="icon-button" aria-label="列印或儲存 PDF" title="列印或儲存 PDF">⎙</button></div></div>
-        <div class="report-tabs" role="tablist" aria-label="報告內容"><button role="tab" aria-selected="true" class="active" data-tab="overview">總覽 <span>01</span></button><button role="tab" aria-selected="false" data-tab="personality">性格與動機 <span>02</span></button><button role="tab" aria-selected="false" data-tab="characters">角色映照 <span>03</span></button><button role="tab" aria-selected="false" data-tab="growth">成長指引 <span>04</span></button><button role="tab" aria-selected="false" data-tab="career">生涯與行為 <span>05</span></button></div>
+        <div class="report-tabs" role="tablist" aria-label="報告內容"><button role="tab" aria-selected="true" class="active" data-tab="overview">總覽 <span>01</span></button><button role="tab" aria-selected="false" data-tab="personality">性格與動機 <span>02</span></button><button role="tab" aria-selected="false" data-tab="characters">角色映照 <span>03</span></button><button role="tab" aria-selected="false" data-tab="growth">成長指引 <span>04</span></button></div>
         <div id="report-content" tabindex="-1"></div>
       </section>
       <footer><div>✳ <b>星序 ASTRA</b><span>認識自己，是一生最浪漫的探索。</span></div><p>以象徵為鏡，以選擇為路。星座與靈數供娛樂及自我反思，非科學人格測評或未來預測。</p><small>© <span id="year"></span> ASTRA · MADE OF STARDUST</small></footer>
