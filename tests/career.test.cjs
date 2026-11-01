@@ -1,37 +1,10 @@
-const test=require('node:test'),assert=require('node:assert/strict');
-const k=require('../dist/career-core.js');
-const answers=(fn=()=>3)=>Object.fromEntries(k.questions.map(q=>[q.id,fn(q)]));
-test('incomplete, invalid and coerced answers cannot produce a style',()=>{
- for(const invalid of [{},answers(q=>q.id==='D1'?undefined:3),answers(q=>q.id==='D1'?'5':3),answers(q=>q.id==='D1'?6:3),answers(q=>q.id==='D1'?1.5:3)])assert.throws(()=>k.score(invalid));
-});
-test('four independent averages come only from the 16 answers',()=>{
- const r=k.score(answers(q=>({D:5,I:4,S:2,C:1})[q.style]));
- assert.deepEqual(r.averages,{D:5,I:4,S:2,C:1});assert.deepEqual(r.leaders,['D']);assert.equal(r.balanced,false);
-});
-test('ties are retained and close scores are flagged as balanced',()=>{
- assert.deepEqual(k.score(answers(q=>q.style==='D'||q.style==='I'?5:2)).leaders,['D','I']);
- assert.equal(k.score(answers()).balanced,true);assert.equal(k.score(answers(q=>q.id==='D1'?5:3)).balanced,true);
-});
-test('legacy saved reports and malformed states stay empty',()=>{
- assert.deepEqual(k.normalize(undefined),k.empty());assert.deepEqual(k.normalize({version:2}),k.empty());assert.equal(k.normalize({version:1,submitted:true,answers:{}}).submitted,false);
-});
-test('4U text is explicitly supplied rather than inferred',()=>{
- assert.equal(k.cleanFourU({source:'only a source'}),null);
- const report=k.cleanFourU({role:'測試角色',rawText:'<script>user text</script>'},true);
- assert.equal(report.role,'測試角色');assert.equal(report.rawText,'<script>user text</script>');assert.ok(report.source);
- assert.throws(()=>k.cleanFourU({rawText:'a'.repeat(12001)},true));
-});
-test('same-birthday career export roundtrip preserves answers and 4U content',()=>{
- const state={version:1,answers:answers(),submitted:true,fourU:{role:'測試角色',rawText:'報告摘錄'}};
- const value=JSON.stringify({format:'astra-career-v1',birthday:'1996-08-16',career:state});
- assert.deepEqual(k.parseImport(value,'1996-08-16'),k.normalize(state));
- assert.throws(()=>k.parseImport(value,'2000-01-01'),/生日/);
-});
-test('foreign JSON, oversized fields and invalid completed questionnaires are rejected',()=>{
- assert.throws(()=>k.parseImport('{}','1996-08-16'));
- assert.throws(()=>k.parseImport('not json','1996-08-16'));
- assert.throws(()=>k.parseImport('a'.repeat(80001),'1996-08-16'));
- const wrap=career=>JSON.stringify({format:'astra-career-v1',birthday:'1996-08-16',career});
- assert.throws(()=>k.parseImport(wrap({version:1,submitted:true,answers:{}}),'1996-08-16'));
- assert.throws(()=>k.parseImport(wrap({version:1,fourU:{role:4}}),'1996-08-16'));
-});
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const K=require('../dist/career-core.js');
+const answers=(scores={D:5,I:4,S:2,C:1})=>Object.fromEntries(K.questions.map(q=>[q.id,scores[q.style]]));
+test('requires all 16 integer answers within 1–5',()=>{assert.equal(K.questions.length,16);for(const style of Object.keys(K.styles))assert.equal(K.questions.filter(q=>q.style===style).length,4);for(const bad of [null,[],{}, {...answers(),D1:'5'},{...answers(),D1:0},{...answers(),D1:6},{...answers(),D1:2.5}])assert.throws(()=>K.score(bad));});
+test('averages reflect the four independent behavior scales',()=>{const r=K.score(answers());assert.deepEqual(r.averages,{D:5,I:4,S:2,C:1});assert.deepEqual(r.leaders,['D']);assert.equal(r.balanced,false);});
+test('retains tied leaders and identifies close scales',()=>{assert.deepEqual(K.score(answers({D:5,I:5,S:2,C:1})).leaders,['D','I']);const r=K.score(answers({D:3,I:3,S:3,C:3}));assert.equal(r.balanced,true);assert.equal(r.leaders.length,4);});
+test('normalization preserves valid legacy answers without old report import fields',()=>{const n=K.normalize({version:1,answers:answers(),submitted:true,fourU:{secret:'old'}});assert.equal(n.version,2);assert.equal(n.submitted,true);assert.deepEqual(n.answers,answers());assert.equal('fourU' in n,false);assert.deepEqual(K.normalize({version:99}),K.empty());});
+test('partial answers cannot become completed results',()=>{const n=K.normalize({version:2,answers:{D1:5,D2:0,I1:'4'},submitted:true});assert.deepEqual(n.answers,{D1:5});assert.equal(n.submitted,false);});
+test('journal is bounded and remains plain text',()=>{const n=K.normalize({version:2,plan:{context:' a '.repeat(500),action:123,review:' <script>example</script> '}});assert.equal(n.plan.context.length,600);assert.equal(n.plan.action,'');assert.equal(n.plan.review,'<script>example</script>');});
